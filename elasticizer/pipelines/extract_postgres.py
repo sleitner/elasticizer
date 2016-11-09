@@ -115,16 +115,21 @@ class Format(luigi.Task):
             ES destination use json file of format mapped-field : DB-field
         '''
         # match SQL columns to mapped fields
+        print self.fn_es_to_sql_fields
+        print fields
         with open(self.fn_es_to_sql_fields, "r") as fp:
             es_to_sql = json.load(fp)
+        print es_to_sql
         sql_columns = ', '.join([
             es_to_sql[f] if f in es_to_sql
             else f
             for f in fields
         ])
+        print sql_columns
         # Build a query to get sql fields from postgres
         template = "SELECT {0} FROM {1} {2};"
         sql = template.format(sql_columns, self.table, self.sql_filter)
+        print sql
         return sql
 
     def run(self):
