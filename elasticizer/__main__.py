@@ -40,6 +40,9 @@ def build_arg_parser():
     parser.add('--marker_table', action='store_true',
                default=False, dest='marker_table',
                help='write to a marker table in the SQL database')
+    parser.add('--marker_index', required=False, 
+               default='update_log', dest='marker_index',
+               help='write to a marker index in Elasticsearch')
     parser.add('--restart', '-r', action='store_true',
                default=False, dest='restart',
                help='clear all targets before running')
@@ -104,6 +107,7 @@ def main():
                 table=cmdline_args.table,
                 sql_filter=cmdline_args.sql_filter,
                 marker_table=cmdline_args.marker_table, 
+                marker_index=cmdline_args.marker_index, 
                 es_timeout=cmdline_args.es_timeout)
     if cmdline_args.clear:
         clear(task)

@@ -64,6 +64,7 @@ class Format(luigi.Task):
     sql_filter = luigi.Parameter()
     fn_es_to_sql_fields = 'psql_column_rename.json'
     marker_table = luigi.BooleanParameter()
+    marker_index = luigi.Parameter()
 
     def _fields_from_mapping(self):
         with open(self.mapping_file, 'r') as fp:
@@ -179,6 +180,7 @@ class ElasticIndex(CopyToIndex):
     table = luigi.Parameter()
     sql_filter = luigi.Parameter()
     marker_table = luigi.BooleanParameter()
+    marker_index = luigi.Parameter()
     es_timeout = luigi.IntParameter()
 
     # this is a hack to force action by Luigi through changing parameters
@@ -202,7 +204,8 @@ class ElasticIndex(CopyToIndex):
                 ValidMapping(mapping_file=self.mapping_file),
                 Format(mapping_file=self.mapping_file, docs_file=self.docs_file,
                        table=self.table, sql_filter=self.sql_filter,
-                       marker_table=self.marker_table)]
+                       marker_table=self.marker_table, 
+                       marker_index=self.marker_index,)]
 
     @property
     def timeout(self):
@@ -295,6 +298,7 @@ class Load(luigi.WrapperTask):
     table = luigi.Parameter()
     sql_filter = luigi.Parameter()
     marker_table = luigi.BooleanParameter()
+    marker_index = luigi.Parameter()
     es_timeout = luigi.IntParameter()
 
     def requires(self):
@@ -305,6 +309,7 @@ class Load(luigi.WrapperTask):
                     docs_file=self.docs_file,
                     table=self.table, sql_filter=self.sql_filter,
                     marker_table=self.marker_table,
+                    marker_index=self.marker_index,
                     es_timeout=self.es_timeout)]
 
     @staticmethod
